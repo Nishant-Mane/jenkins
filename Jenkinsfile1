@@ -23,10 +23,12 @@ pipeline {
 
         stage('Copy & Start Remote App') {
             steps {
-                sh """
-                    scp -o StrictHostKeyChecking=no target/java_web_app-1.0-SNAPSHOT.jar ubuntu@13.203.76.32:/home/ubuntu/myapp/;
-                    ssh -o StrictHostKeyChecking=no ubuntu@13.203.76.32 'bash /home/ubuntu/myapp/start.sh';
-                """
+                sshagent(credentials: ['ubuntu-ssh']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no target/java_web_app-1.0-SNAPSHOT.jar ubuntu@13.203.76.32:/home/ubuntu/myapp/
+                        ssh -o StrictHostKeyChecking=no ubuntu@13.203.76.32 'bash /home/ubuntu/myapp/start.sh'
+                    """
+                }
             }
         }
     }
